@@ -80,7 +80,7 @@ class Test_Core_Auth_Process_ScopeFromAttribute extends PHPUnit_Framework_TestCa
     }
 
     /*
-     * When multiple @ signs in attribute, should use last one.
+     * When multiple @ signs in attribute, should use first one.
      */
     public function testMultiAt()
     {
@@ -95,13 +95,11 @@ class Test_Core_Auth_Process_ScopeFromAttribute extends PHPUnit_Framework_TestCa
         );
         $result = self::processFilter($config, $request);
         $attributes = $result['Attributes'];
-        $this->assertEquals($attributes['scope'], array('example.com'));
+        $this->assertEquals($attributes['scope'], array('doe@example.com'));
     }
 
     /*
      * When the source attribute doesn't have a scope, a warning is emitted
-     * NOTE: currently disabled: this triggers a warning and a warning
-     * wants to start a session which we cannot do in phpunit. How to fix?
      */
     public function testNoAt()
     {

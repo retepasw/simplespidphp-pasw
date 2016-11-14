@@ -68,9 +68,9 @@ class sspmod_core_Auth_Process_ScopeFromAttribute extends SimpleSAML_Auth_Proces
 
         $sourceAttrVal = $attributes[$this->sourceAttribute][0];
 
-        /* the last position of an @ is usually the beginning of the scope
-         * string */
-        $scopeIndex = strrpos($sourceAttrVal, '@');
+        /* Treat the first @ as usually the beginning of the scope
+         * string, as per eduPerson recommendation. */
+        $scopeIndex = strpos($sourceAttrVal, '@');
 
         if ($scopeIndex !== false) {
             $attributes[$this->targetAttribute] = array();
