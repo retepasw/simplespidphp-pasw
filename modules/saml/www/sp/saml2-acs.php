@@ -72,20 +72,11 @@ if ($prevAuth !== null && $prevAuth['id'] === $response->getId() && $prevAuth['i
 
 $idpMetadata = array();
 
-$state = null;
 $stateId = $response->getInResponseTo();
 if (!empty($stateId)) {
-    // this should be a response to a request we sent earlier
-    try {
-        $state = SimpleSAML_Auth_State::loadState($stateId, 'saml:sp:sso');
-    } catch (Exception $e) {
-        // something went wrong,
-        SimpleSAML_Logger::warning('Could not load state specified by InResponseTo: '.$e->getMessage().
-            ' Processing response as unsolicited.');
-    }
-}
+    // this is a response to a request we sent earlier
+    $state = SimpleSAML_Auth_State::loadState($stateId, 'saml:sp:sso');
 
-if ($state) {
     // check that the authentication source is correct
     assert('array_key_exists("saml:sp:AuthId", $state)');
     if ($state['saml:sp:AuthId'] !== $sourceId) {
@@ -143,7 +134,7 @@ $foundAuthnStatement = false;
 foreach ($assertions as $assertion) {
 
     // check for duplicate assertion (replay attack)
-    $store = \SimpleSAML\Store::getInstance();
+    $store = SimpleSAML_Store::getInstance();
     if ($store !== false) {
         $aID = $assertion->getId();
         if ($store->get('saml.AssertionReceived', $aID) !== null) {

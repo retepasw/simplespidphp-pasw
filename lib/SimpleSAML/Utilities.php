@@ -297,12 +297,12 @@ class SimpleSAML_Utilities
 
 
     /**
-     * @deprecated This method will be removed in SSP 2.0. Please use SimpleSAML\Utils\XML::isDOMNodeOfType()
+     * @deprecated This method will be removed in SSP 2.0. Please use SimpleSAML\Utils\XML::isDOMElementOfType()
      *     instead.
      */
     public static function isDOMElementOfType(DOMNode $element, $name, $nsURI)
     {
-        return SimpleSAML\Utils\XML::isDOMNodeOfType($element, $name, $nsURI);
+        return SimpleSAML\Utils\XML::isDOMElementOfType($element, $name, $nsURI);
     }
 
 
@@ -583,7 +583,7 @@ class SimpleSAML_Utilities
      */
     public static function validateCA($certificate, $caFile)
     {
-        \SimpleSAML\XML\Validator::validateCertificate($certificate, $caFile);
+        SimpleSAML_XML_Validator::validateCertificate($certificate, $caFile);
     }
 
 

@@ -1,4 +1,10 @@
 <?php
+/**
+ * File modificato da Paolo Bozzo per Porte Aperte sul Web
+ * partendo dal pacchetto per SPID realizzato dal Comune di Firenze per conto di AgID
+ * che a sua volta è un fork del framework SimpleSAMLphp
+ * ogni modifica è segnalata con la sigla PASW
+ */
 
 /**
  * Logout endpoint handler for SAML SP authentication client.
@@ -55,16 +61,17 @@ if ($destination !== NULL && $destination !== \SimpleSAML\Utils\HTTP::getSelfURL
 if ($message instanceof \SAML2\LogoutResponse) {
 
 	$relayState = $message->getRelayState();
+/* PASW removed error
 	if ($relayState === NULL) {
 		// Somehow, our RelayState has been lost.
 		throw new SimpleSAML_Error_BadRequest('Missing RelayState in logout response.');
 	}
-
+*/
 	if (!$message->isSuccess()) {
 		SimpleSAML\Logger::warning('Unsuccessful logout. Status was: ' . sspmod_saml_Message::getResponseError($message));
 	}
 
-	$state = SimpleSAML_Auth_State::loadState($relayState, 'saml:slosent');
+	$state = SimpleSAML_Auth_State::loadState($relayState, 'saml:slosent', true); // PASW added allow missing
 	$state['saml:sp:LogoutStatus'] = $message->getStatus();
 	SimpleSAML_Auth_Source::completeLogout($state);
 

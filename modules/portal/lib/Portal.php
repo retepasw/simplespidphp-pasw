@@ -30,15 +30,15 @@ class sspmod_portal_Portal {
 		return FALSE;
 	}
 	
-	function getLoginInfo($translator, $thispage) {
-		$info = array('info' => '', 'translator' => $translator, 'thispage' => $thispage);
+	function getLoginInfo($t, $thispage) {
+		$info = array('info' => '', 'template' => $t, 'thispage' => $thispage);
 		SimpleSAML\Module::callHooks('portalLoginInfo', $info);
 		return $info['info'];
 	}
 	
 	function getMenu($thispage) {
 		$config = SimpleSAML_Configuration::getInstance();
-		$t = new SimpleSAML\Locale\Translate($config);
+		$t = new SimpleSAML_XHTML_Template($config, 'sanitycheck:check.tpl.php');
 		$tabset = $this->getTabset($thispage);
 		$logininfo = $this->getLoginInfo($t, $thispage);
 		$text = '';

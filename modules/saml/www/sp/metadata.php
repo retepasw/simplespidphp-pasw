@@ -21,7 +21,7 @@ if (!($source instanceof sspmod_saml_Auth_Source_SP)) {
 
 $entityId = $source->getEntityId();
 $spconfig = $source->getMetadata();
-$store = \SimpleSAML\Store::getInstance();
+$store = SimpleSAML_Store::getInstance();
 
 $metaArray20 = array();
 
@@ -34,7 +34,7 @@ $slob = $spconfig->getArray('SingleLogoutServiceBinding', $slosvcdefault);
 $slol = SimpleSAML\Module::getModuleURL('saml/sp/saml2-logout.php/'.$sourceId);
 
 foreach ($slob as $binding) {
-    if ($binding == \SAML2\Constants::BINDING_SOAP && !($store instanceof \SimpleSAML\Store\SQL)) {
+    if ($binding == \SAML2\Constants::BINDING_SOAP && !($store instanceof SimpleSAML_Store_SQL)) {
         // we cannot properly support SOAP logout
         continue;
     }
@@ -66,6 +66,10 @@ foreach ($assertionsconsumerservices as $services) {
         case 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST':
             $acsArray['Binding'] = \SAML2\Constants::BINDING_HTTP_POST;
             $acsArray['Location'] = SimpleSAML\Module::getModuleURL('saml/sp/saml2-acs.php/'.$sourceId);
+            /*COMUNE DI FIRENZE
+            SPID require isDefault set to true on urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST */
+            $acsArray['isDefault'] = true;
+            /*COMUNE DI FIRENZE*/
             break;
         case 'urn:oasis:names:tc:SAML:1.0:profiles:browser-post':
             $acsArray['Binding'] = 'urn:oasis:names:tc:SAML:1.0:profiles:browser-post';
@@ -214,7 +218,19 @@ if ($spconfig->hasValue('redirect.sign')) {
     $metaArray20['validate.authnrequest'] = $spconfig->getBoolean('sign.authnrequest');
 }
 
-$supported_protocols = array('urn:oasis:names:tc:SAML:1.1:protocol', \SAML2\Constants::NS_SAMLP);
+/*COMUNE DI FIRENZE*/
+/*We can't set supported_protocols in authsources.php
+Suggest to change from:
+$supported_protocols = array('urn:oasis:names:tc:SAML:1.1:protocol', SAML2_Const::NS_SAMLP);
+To:
+So if in config is set metadata.supported.protocols, we can use it, oterwise remain defalt for backwards compatibility
+*/
+if ($spconfig->hasValue('metadata.supported.protocols')) {
+    $supported_protocols = $spconfig->getArray('metadata.supported.protocols');
+} else {
+    $supported_protocols = array('urn:oasis:names:tc:SAML:1.1:protocol', \SAML2\Constants::NS_SAMLP);
+}
+/*COMUNE DI FIRENZE*/
 
 $metaArray20['metadata-set'] = 'saml20-sp-remote';
 $metaArray20['entityid'] = $entityId;

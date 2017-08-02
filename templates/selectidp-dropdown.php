@@ -41,7 +41,7 @@ foreach ($this->data['idplist'] as $idpentry) {
              * then go back to the previous behaviour.
              */
             $GLOBALS['__t'] = $this;
-            usort($this->data['idplist'], function ($idpentry1, $idpentry2) {
+            @usort($this->data['idplist'], function ($idpentry1, $idpentry2) {
                 return strcmp(
                     $GLOBALS['__t']->t('idpname_'.$idpentry1['entityid']),
                     $GLOBALS['__t']->t('idpname_'.$idpentry2['entityid'])

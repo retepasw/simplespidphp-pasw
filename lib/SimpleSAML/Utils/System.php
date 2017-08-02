@@ -31,11 +31,11 @@ class System
         if (stristr(PHP_OS, 'LINUX')) {
             return self::LINUX;
         }
-        if (stristr(PHP_OS, 'DARWIN')) {
-            return self::OSX;
-        }
         if (stristr(PHP_OS, 'WIN')) {
             return self::WINDOWS;
+        }
+        if (stristr(PHP_OS, 'DARWIN')) {
+            return self::OSX;
         }
         if (stristr(PHP_OS, 'BSD')) {
             return self::BSD;
@@ -202,10 +202,6 @@ class System
             throw new \SimpleSAML_Error_Exception(
                 'Error moving "'.$tmpFile.'" to "'.$filename.'": '.$error['message']
             );
-        }
-
-        if (function_exists('opcache_invalidate')) {
-            opcache_invalidate($filename);
         }
     }
 }

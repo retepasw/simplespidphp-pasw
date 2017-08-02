@@ -1,9 +1,6 @@
 `core:AttributeRealm`
 =====================
 
-*NOTE:* This filter has been deprecated and will be removed in a future release. Please use
-`core:ScopeFromAttribute` instead.
-
 This filter creates a new attribute with the realm of the user.
 
 The new attribute is names `realm` by default, but can be controlled by the `attributename` option.

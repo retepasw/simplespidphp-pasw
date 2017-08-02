@@ -23,7 +23,7 @@ if (!$idpMetadata->getBoolean('saml20.sendartifact', false)) {
     throw new SimpleSAML_Error_Error('NOACCESS');
 }
 
-$store = \SimpleSAML\Store::getInstance();
+$store = SimpleSAML_Store::getInstance();
 if ($store === false) {
     throw new Exception('Unable to send artifact without a datastore configured.');
 }

@@ -1,22 +1,18 @@
 <?php
 
-namespace SimpleSAML\Store;
-
-use \SimpleSAML_Configuration as Configuration;
-use \SimpleSAML\Logger;
-use \SimpleSAML\Store;
 
 /**
  * A data store using a RDBMS to keep the data.
  *
  * @package SimpleSAMLphp
  */
-class SQL extends Store
+class SimpleSAML_Store_SQL extends SimpleSAML_Store
 {
+
     /**
      * The PDO object for our database.
      *
-     * @var \PDO
+     * @var PDO
      */
     public $pdo;
 
@@ -50,17 +46,17 @@ class SQL extends Store
      */
     protected function __construct()
     {
-        $config = Configuration::getInstance();
+        $config = SimpleSAML_Configuration::getInstance();
 
         $dsn = $config->getString('store.sql.dsn');
         $username = $config->getString('store.sql.username', null);
         $password = $config->getString('store.sql.password', null);
         $this->prefix = $config->getString('store.sql.prefix', 'simpleSAMLphp');
 
-        $this->pdo = new \PDO($dsn, $username, $password);
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
+        $this->pdo = new PDO($dsn, $username, $password);
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        $this->driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         if ($this->driver === 'mysql') {
             $this->pdo->exec('SET time_zone = "+00:00"');
@@ -80,7 +76,7 @@ class SQL extends Store
 
         try {
             $fetchTableVersion = $this->pdo->query('SELECT _name, _version FROM '.$this->prefix.'_tableVersion');
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->pdo->exec(
                 'CREATE TABLE '.$this->prefix.
                 '_tableVersion (_name VARCHAR(30) NOT NULL UNIQUE, _version INTEGER NOT NULL)'
@@ -88,7 +84,7 @@ class SQL extends Store
             return;
         }
 
-        while (($row = $fetchTableVersion->fetch(\PDO::FETCH_ASSOC)) !== false) {
+        while (($row = $fetchTableVersion->fetch(PDO::FETCH_ASSOC)) !== false) {
             $this->tableVersions[$row['_name']] = (int) $row['_version'];
         }
     }
@@ -99,6 +95,7 @@ class SQL extends Store
      */
     private function initKVTable()
     {
+
         if ($this->getTableVersion('kvstore') === 1) {
             // Table initialized
             return;
@@ -189,19 +186,20 @@ class SQL extends Store
                 return;
         }
 
-        // default implementation, try INSERT, and UPDATE if that fails.
+        // Default implementation. Try INSERT, and UPDATE if that fails.
+
         $insertQuery = 'INSERT INTO '.$table.' '.$colNames.' '.$values;
         $insertQuery = $this->pdo->prepare($insertQuery);
         try {
             $insertQuery->execute($data);
             return;
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $ecode = (string) $e->getCode();
             switch ($ecode) {
                 case '23505': // PostgreSQL
                     break;
                 default:
-                    Logger::error('Error while saving data: '.$e->getMessage());
+                    SimpleSAML\Logger::error('Error while saving data: '.$e->getMessage());
                     throw $e;
             }
         }
@@ -209,6 +207,7 @@ class SQL extends Store
         $updateCols = array();
         $condCols = array();
         foreach ($data as $col => $value) {
+
             $tmp = $col.' = :'.$col;
 
             if (in_array($col, $keys, true)) {
@@ -229,7 +228,8 @@ class SQL extends Store
      */
     private function cleanKVStore()
     {
-        Logger::debug('store.sql: Cleaning key-value store.');
+
+        SimpleSAML\Logger::debug('store.sql: Cleaning key-value store.');
 
         $query = 'DELETE FROM '.$this->prefix.'_kvstore WHERE _expire < :now';
         $params = array('now' => gmdate('Y-m-d H:i:s'));
@@ -263,7 +263,7 @@ class SQL extends Store
         $query = $this->pdo->prepare($query);
         $query->execute($params);
 
-        $row = $query->fetch(\PDO::FETCH_ASSOC);
+        $row = $query->fetch(PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
@@ -317,6 +317,7 @@ class SQL extends Store
             '_value'  => $value,
             '_expire' => $expire,
         );
+
 
         $this->insertOrUpdate($this->prefix.'_kvstore', array('_type', '_key'), $data);
     }

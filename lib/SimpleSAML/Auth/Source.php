@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * File modificato da Paolo Bozzo per Porte Aperte sul Web
+ * partendo dal pacchetto per SPID realizzato dal Comune di Firenze per conto di AgID
+ * che a sua volta è un fork del framework SimpleSAMLphp
+ * ogni modifica è segnalata con la sigla PASW
+ */
 
 /**
  * This class defines a base class for authentication source.
@@ -271,7 +277,8 @@ abstract class SimpleSAML_Auth_Source
         $func = $state['LogoutCompletedHandler'];
         assert('is_callable($func)');
 
-        call_user_func($func, $state);
+        if ($func) call_user_func($func, $state); // PASW if added
+        else SimpleSAML_Auth_Default::logoutCompleted($state);
         assert(false);
     }
 

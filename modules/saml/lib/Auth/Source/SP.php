@@ -147,7 +147,7 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 
 		$state['saml:idp'] = $idpEntityId;
 
-		$ar = new \SimpleSAML\XML\Shib13\AuthnRequest();
+		$ar = new SimpleSAML_XML_Shib13_AuthnRequest();
 		$ar->setIssuer($this->entityId);
 
 		$id = SimpleSAML_Auth_State::saveState($state, 'saml:sp:sso');
@@ -218,7 +218,7 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 		}
 
 		if (isset($state['saml:NameID'])) {
-			if (!is_array($state['saml:NameID']) && !is_a($state['saml:NameID'], '\SAML2\XML\saml\NameID')) {
+			if (!is_array($state['saml:NameID'])) {
 				throw new SimpleSAML_Error_Exception('Invalid value of $state[\'saml:NameID\'].');
 			}
 			$ar->setNameId($state['saml:NameID']);

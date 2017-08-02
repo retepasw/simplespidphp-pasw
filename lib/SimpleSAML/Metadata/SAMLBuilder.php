@@ -368,6 +368,12 @@ class SimpleSAML_Metadata_SAMLBuilder
                 }
 
                 $t->index = $ep['index'];
+                /*COMUNE DI FIRENZE*/
+                /* SPID require isDefault attribute in metadata on first endponit, but i didn't find a solution to pass this entdpoint parameter */
+                if (isset($ep['isDefault'])) {
+                    $t->isDefault = $ep['isDefault'];
+                }
+               /*COMUNE DI FIRENZE*/
             }
 
             $ret[] = $t;
@@ -687,10 +693,6 @@ class SimpleSAML_Metadata_SAMLBuilder
 
         $e = new \SAML2\XML\md\ContactPerson();
         $e->contactType = $type;
-
-        if (!empty($details['attributes'])) {
-            $e->ContactPersonAttributes = $details['attributes'];
-        }
 
         if (isset($details['company'])) {
             $e->Company = $details['company'];

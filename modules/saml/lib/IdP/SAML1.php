@@ -1,5 +1,4 @@
 <?php
-use SimpleSAML\Bindings\Shib13\HTTPPost;
 
 /**
  * IdP implementation for SAML 1.1 protocol.
@@ -48,10 +47,10 @@ class sspmod_saml_IdP_SAML1 {
 		SimpleSAML_Stats::log('saml:idp:Response', $statsData);
 
 		// Generate and send response.
-		$ar = new \SimpleSAML\XML\Shib13\AuthnResponse();
+		$ar = new SimpleSAML_XML_Shib13_AuthnResponse();
 		$authnResponseXML = $ar->generate($idpMetadata, $spMetadata, $shire, $attributes);
 
-		$httppost = new HTTPPost($config, $metadata);
+		$httppost = new SimpleSAML_Bindings_Shib13_HTTPPost($config, $metadata);
 		$httppost->sendResponse($authnResponseXML, $idpMetadata, $spMetadata, $target, $shire);
 	}
 

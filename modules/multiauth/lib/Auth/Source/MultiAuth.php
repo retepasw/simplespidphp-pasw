@@ -143,13 +143,7 @@ class sspmod_multiauth_Auth_Source_MultiAuth extends SimpleSAML_Auth_Source {
 		assert('is_array($state)');
 
 		$as = SimpleSAML_Auth_Source::getById($authId);
-		$valid_sources = array_map(
-			function($src) {
-				return $src['source'];
-			},
-			$state[self::SOURCESID]
-        );
-		if ($as === NULL || !in_array($authId, $valid_sources)) {
+		if ($as === NULL) {
 			throw new Exception('Invalid authentication source: ' . $authId);
 		}
 

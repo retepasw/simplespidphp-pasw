@@ -215,7 +215,6 @@ class MetadataTest extends \PHPUnit_Framework_TestCase
         }
         $contact['contactType'] = 'technical';
         $contact['name'] = 'to_be_removed';
-        $contact['attributes'] = array('test' => 'testval');
         $parsed = Metadata::getContact($contact);
         foreach (array_keys($parsed) as $key) {
             $this->assertEquals($parsed[$key], $contact[$key]);

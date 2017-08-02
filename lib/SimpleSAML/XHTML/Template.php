@@ -7,12 +7,6 @@
  * @author Andreas Åkre Solberg, UNINETT AS. <andreas.solberg@uninett.no>
  * @package SimpleSAMLphp
  */
-
-
-use JaimePerez\TwigConfigurableI18n\Twig\Environment as Twig_Environment;
-use JaimePerez\TwigConfigurableI18n\Twig\Extensions\Extension\I18n as Twig_Extensions_Extension_I18n;
-
-
 class SimpleSAML_XHTML_Template
 {
 
@@ -31,13 +25,6 @@ class SimpleSAML_XHTML_Template
     private $translator;
 
     /**
-     * The localization backend
-     *
-     * @var \SimpleSAML\Locale\Localization
-     */
-    private $localization;
-
-    /**
      * The configuration to use in this template.
      *
      * @var SimpleSAML_Configuration
@@ -52,46 +39,17 @@ class SimpleSAML_XHTML_Template
     private $template = 'default.php';
 
     /**
-     * The twig environment.
-     *
-     * @var false|Twig_Environment
-     */
-    private $twig;
-
-    /**
      * The template name.
      *
      * @var string
      */
     private $twig_template;
 
-    /**
-     * Current module, if any.
+    /*
+     * Main Twig namespace, to avoid misspelling it *again*
      */
-    private $module;
+    private $twig_namespace = \Twig_Loader_Filesystem::MAIN_NAMESPACE;
 
-    /**
-     * A template controller, if any.
-     *
-     * Used to intercept certain parts of the template handling, while keeping away unwanted/unexpected hooks. Set
-     * the 'theme.controller' configuration option to a class that implements the
-     * SimpleSAML\XHTML\TemplateControllerInterface interface to use it.
-     *
-     * @var SimpleSAML\XHTML\TemplateControllerInterface
-     */
-    private $controller;
-
-
-    /**
-     * Whether we are using a non-default theme or not.
-     *
-     * If we are using a theme, this variable holds an array with two keys: "module" and "name", those being the name
-     * of the module and the name of the theme, respectively. If we are using the default theme, the variable defaults
-     * to false.
-     *
-     * @var bool|array
-     */
-    private $theme;
 
     /**
      * Constructor
@@ -106,27 +64,7 @@ class SimpleSAML_XHTML_Template
         $this->template = $template;
         // TODO: do not remove the slash from the beginning, change the templates instead!
         $this->data['baseurlpath'] = ltrim($this->configuration->getBasePath(), '/');
-
-        // parse module and template name
-        list($this->module) = $this->findModuleAndTemplateName($template);
-
-        // parse config to find theme and module theme is in, if any
-        list($this->theme['module'], $this->theme['name']) = self::findModuleAndTemplateName(
-            $this->configuration->getString('theme.use', 'default')
-        );
-
-        // initialize internationalization system
         $this->translator = new SimpleSAML\Locale\Translate($configuration, $defaultDictionary);
-        $this->localization = new \SimpleSAML\Locale\Localization($configuration);
-
-        // check if we need to attach a theme controller
-        $controller = $this->configuration->getString('theme.controller', false);
-        if ($controller && class_exists($controller) &&
-            class_implements($controller, '\SimpleSAML\XHTML\TemplateControllerInterface')
-        ) {
-            $this->controller = new $controller();
-        }
-
         $this->twig = $this->setupTwig();
     }
 
@@ -165,20 +103,27 @@ class SimpleSAML_XHTML_Template
         $filename = $this->normalizeTemplateName($this->template);
 
         // get namespace if any
-        list($namespace, $filename) = self::findModuleAndTemplateName($filename);
-        $this->twig_template = ($namespace !== null) ? '@'.$namespace.'/'.$filename : $filename;
-        $loader = new \Twig_Loader_Filesystem();
-        $templateDirs = $this->findThemeTemplateDirs();
-        if ($this->module) {
-            $templateDirs[] = array($this->module => $this->getModuleTemplateDir($this->module));
+        $namespace = '';
+        $split = explode(':', $filename, 2);
+        if (count($split) === 2) {
+            $namespace = $split[0];
+            $filename = $split[1];
         }
-
+        $this->twig_template = $namespace ? '@'.$namespace.'/'.$filename : $filename;
+        $loader = new \Twig_Loader_Filesystem();
+        $templateDirs = array_merge(
+            $this->findThemeTemplateDirs(),
+            $this->findModuleTemplateDirs()
+        );
         // default, themeless templates are checked last
         $templateDirs[] = array(
-            \Twig_Loader_Filesystem::MAIN_NAMESPACE => $this->configuration->resolvePath('templates')
+            $this->twig_namespace => $this->configuration->resolvePath('templates')
         );
         foreach ($templateDirs as $entry) {
             $loader->addPath($entry[key($entry)], key($entry));
+        }
+        if (!$loader->exists($this->twig_template)) {
+            return false;
         }
         return $loader;
     }
@@ -190,136 +135,82 @@ class SimpleSAML_XHTML_Template
     private function setupTwig()
     {
         $auto_reload = $this->configuration->getBoolean('template.auto_reload', true);
-        $cache = $this->configuration->getString('template.cache', false);
+        $cache = false;
+        if (!$auto_reload) {
+            // Cache only used if auto_reload = false
+            $cache = $this->configuration->getString('template.cache', $this->configuration->resolvePath('cache'));
+        }
         // set up template paths
         $loader = $this->setupTwigTemplatepaths();
-        // abort if twig template does not exist
-        if (!$loader->exists($this->twig_template)) {
-            return false;
+        if (!$loader) {
+            return null;
         }
 
-        // load extra i18n domains
-        if ($this->module) {
-            $this->localization->addModuleDomain($this->module);
-        }
-        if ($this->theme['module'] !== null && $this->theme['module'] !== $this->module) {
-            $this->localization->addModuleDomain($this->theme['module']);
-        }
-
-        $options = array(
-            'cache' => $cache,
-            'auto_reload' => $auto_reload,
-            'translation_function' => array('\SimpleSAML\Locale\Translate', 'translateSingularNativeGettext'),
-            'translation_function_plural' => array('\SimpleSAML\Locale\Translate', 'translatePluralNativeGettext'),
-        );
-
-        // set up translation
-        if ($this->localization->i18nBackend === \SimpleSAML\Locale\Localization::GETTEXT_I18N_BACKEND) {
-            $options['translation_function'] = array('\SimpleSAML\Locale\Translate', 'translateSingularGettext');
-            $options['translation_function_plural'] = array(
-                '\SimpleSAML\Locale\Translate',
-                'translatePluralGettext'
-            );
-        } // TODO: add a branch for the old SimpleSAMLphp backend
-
-        $twig = new Twig_Environment($loader, $options);
-        $twig->addExtension(new Twig_Extensions_Extension_I18n());
-
-        // initialize some basic context
-        $langParam = $this->configuration->getString('language.parameter.name', 'language');
-        $twig->addGlobal('languageParameterName', $langParam);
-        $twig->addGlobal('localeBackend', $this->configuration->getString('language.i18n.backend', 'SimpleSAMLphp'));
-        $twig->addGlobal('currentLanguage', $this->translator->getLanguage()->getLanguage());
-        $twig->addGlobal('isRTL', false); // language RTL configuration
-        if ($this->translator->getLanguage()->isLanguageRTL()) {
-            $twig->addGlobal('isRTL', true);
-        }
-        $queryParams = $_GET; // add query parameters, in case we need them in the template
-        if (isset($queryParams[$langParam])) {
-            unset($queryParams[$langParam]);
-        }
-        $twig->addGlobal('queryParams', $queryParams);
-        $twig->addGlobal('templateId', str_replace('.twig', '', $this->normalizeTemplateName($this->template)));
-
-        if ($this->controller) {
-            $this->controller->setUpTwig($twig);
-        }
-
-        return $twig;
+        return new \Twig_Environment($loader, array('cache' => $cache, 'auto_reload' => $auto_reload));
     }
 
-    /**
-     * Add overriding templates from the configured theme.
+    /*
+     * Add overriding templates in configured theme
      *
-     * @return array An array of module => templatedir lookups.
+     * @return array an array of module => templatedir lookups
      */
     private function findThemeTemplateDirs()
     {
-        if ($this->theme['module'] === null) { // no module involved
+        // parse config to find theme and module theme is in, if any
+        $tmp = explode(':', $this->configuration->getString('theme.use', 'default'), 2);
+        if (count($tmp) === 2) {
+            $themeModule = $tmp[0];
+            $themeName = $tmp[1];
+        } else {
+            $themeModule = null;
+            $themeName = $tmp[0];
+        }
+        // default theme in use, abort
+        if ($themeName == 'default') {
             return array();
         }
-
-        // setup directories & namespaces
-        $themeDir = \SimpleSAML\Module::getModuleDir($this->theme['module']).'/themes/'.$this->theme['name'];
-        $subdirs = scandir($themeDir);
-        if (!$subdirs) { // no subdirectories in the theme directory, nothing to do here
-            // this is probably wrong, log a message
-            \SimpleSAML\Logger::warning('Emtpy theme directory for theme "'.$this->theme['name'].'".');
-            return array();
+        if ($themeModule !== null) {
+            $moduleDir = \SimpleSAML\Module::getModuleDir($themeModule);
+            $themeDir = $moduleDir.'/themes/'.$themeName;
+            $files = scandir($themeDir);
+            if ($files) {
+                $themeTemplateDirs = array();
+                foreach ($files as $file) {
+                    if ($file == '.' || $file == '..') {
+                        continue;
+                    }
+                    // set correct name for default namespace
+                    $ns = $file == 'default' ? $this->twig_namespace : $file;
+                    $themeTemplateDirs[] = array($ns => $themeDir.'/'.$file);
+                }
+                return $themeTemplateDirs;
+            }
         }
+        // theme not found
+        return array();
+    }
 
-        $themeTemplateDirs = array();
-        foreach ($subdirs as $entry) {
-            // discard anything that's not a directory. Expression is negated to profit from lazy evaluation
-            if (!($entry !== '.' && $entry !== '..' && is_dir($themeDir.'/'.$entry))) {
+    /*
+     * Which enabled modules have templates?
+     *
+     * @return array an array of module => templatedir lookups
+     */
+    private function findModuleTemplateDirs()
+    {
+        $all_modules = \SimpleSAML\Module::getModules();
+        $modules = array();
+        foreach ($all_modules as $module) {
+            if (!\SimpleSAML\Module::isModuleEnabled($module)) {
                 continue;
             }
-
-            // set correct name for the default namespace
-            $ns = ($entry === 'default') ? \Twig_Loader_Filesystem::MAIN_NAMESPACE : $entry;
-            $themeTemplateDirs[] = array($ns => $themeDir.'/'.$entry);
+            $moduledir = \SimpleSAML\Module::getModuleDir($module);
+            // check if module has a /templates dir, if so, append
+            $templatedir = $moduledir.'/templates';
+            if (is_dir($templatedir)) {
+                $modules[] = array($module => $templatedir);
+            }
         }
-        return $themeTemplateDirs;
-    }
-
-    /**
-     * Get the template directory of a module, if it exists.
-     *
-     * @return string The templates directory of a module.
-     *
-     * @throws InvalidArgumentException If the module is not enabled or it has no templates directory.
-     */
-    private function getModuleTemplateDir($module)
-    {
-        if (!\SimpleSAML\Module::isModuleEnabled($module)) {
-            throw new InvalidArgumentException('The module \''.$module.'\' is not enabled.');
-        }
-        $moduledir = \SimpleSAML\Module::getModuleDir($module);
-        // check if module has a /templates dir, if so, append
-        $templatedir = $moduledir.'/templates';
-        if (!is_dir($templatedir)) {
-            throw new InvalidArgumentException('The module \''.$module.'\' has no templates directory.');
-
-        }
-        return $templatedir;
-    }
-
-
-    /**
-     * Add the templates from a given module.
-     *
-     * Note that the module must be installed, enabled, and contain a "templates" directory.
-     *
-     * @param string $module The module where we need to search for templates.
-     *
-     * @throws InvalidArgumentException If the module is not enabled or it has no templates directory.
-     */
-    public function addTemplatesFromModule($module)
-    {
-        $dir = $this->getModuleTemplateDir($module);
-        /** @var Twig_Loader_Filesystem $loader */
-        $loader = $this->twig->getLoader();
-        $loader->addPath($dir, $module);
+        return $modules;
     }
 
 
@@ -361,6 +252,7 @@ class SimpleSAML_XHTML_Template
      */
     private function twigDefaultContext()
     {
+        $this->data['currentLanguage'] = $this->translator->getLanguage()->getLanguage();
         // show language bar by default
         if (!isset($this->data['hideLanguageBar'])) {
             $this->data['hideLanguageBar'] = false;
@@ -383,6 +275,12 @@ class SimpleSAML_XHTML_Template
         if (!isset($this->data['pagetitle'])) {
             $this->data['pagetitle'] = 'SimpleSAMLphp';
         }
+
+        // set RTL
+        $this->data['isRTL'] = false;
+        if ($this->translator->getLanguage()->isLanguageRTL()) {
+            $this->data['isRTL'] = true;
+        }
     }
 
 
@@ -391,30 +289,13 @@ class SimpleSAML_XHTML_Template
      */
     public function show()
     {
-        if ($this->twig !== false) {
+        if ($this->twig) {
             $this->twigDefaultContext();
-            if ($this->controller) {
-                $this->controller->display($this->data);
-            }
             echo $this->twig->render($this->twig_template, $this->data);
         } else {
             $filename = $this->findTemplatePath($this->template);
             require($filename);
         }
-    }
-
-
-    /**
-     * Find module the template is in, if any
-     *
-     * @param string $template The relative path from the theme directory to the template file.
-     *
-     * @return array An array with the name of the module and template
-     */
-    private function findModuleAndTemplateName($template)
-    {
-        $tmp = explode(':', $template, 2);
-        return (count($tmp) === 2) ? array($tmp[0], $tmp[1]) : array(null, $tmp[0]);
     }
 
 
@@ -437,15 +318,30 @@ class SimpleSAML_XHTML_Template
     {
         assert('is_string($template)');
 
-        list($templateModule, $templateName) = $this->findModuleAndTemplateName($template);
-        $templateModule = ($templateModule !== null) ? $templateModule : 'default';
+        $tmp = explode(':', $template, 2);
+        if (count($tmp) === 2) {
+            $templateModule = $tmp[0];
+            $templateName = $tmp[1];
+        } else {
+            $templateModule = 'default';
+            $templateName = $tmp[0];
+        }
+
+        $tmp = explode(':', $this->configuration->getString('theme.use', 'default'), 2);
+        if (count($tmp) === 2) {
+            $themeModule = $tmp[0];
+            $themeName = $tmp[1];
+        } else {
+            $themeModule = null;
+            $themeName = $tmp[0];
+        }
 
         // first check the current theme
-        if ($this->theme['module'] !== null) {
+        if ($themeModule !== null) {
             // .../module/<themeModule>/themes/<themeName>/<templateModule>/<templateName>
 
-            $filename = \SimpleSAML\Module::getModuleDir($this->theme['module']).
-                '/themes/'.$this->theme['name'].'/'.$templateModule.'/'.$templateName;
+            $filename = \SimpleSAML\Module::getModuleDir($themeModule).
+                '/themes/'.$themeName.'/'.$templateModule.'/'.$templateName;
         } elseif ($templateModule !== 'default') {
             // .../module/<templateModule>/templates/<templateName>
             $filename = \SimpleSAML\Module::getModuleDir($templateModule).'/templates/'.$templateName;
@@ -499,17 +395,6 @@ class SimpleSAML_XHTML_Template
     public function getTranslator()
     {
         return $this->translator;
-    }
-
-
-    /**
-     * Get the current instance of Twig in use.
-     *
-     * @return false|Twig_Environment The Twig instance in use, or false if Twig is not used.
-     */
-    public function getTwig()
-    {
-        return $this->twig;
     }
 
 

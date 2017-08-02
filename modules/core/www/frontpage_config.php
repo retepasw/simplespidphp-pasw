@@ -1,4 +1,10 @@
 <?php
+/**
+ * File modificato da Paolo Bozzo per Porte Aperte sul Web
+ * partendo dal pacchetto per SPID realizzato dal Comune di Firenze per conto di AgID
+ * che a sua volta è un fork del framework SimpleSAMLphp
+ * ogni modifica è segnalata con la sigla PASW
+ */
 
 
 
@@ -107,7 +113,6 @@ $functionchecks = array(
 	'preg_match'       => array('required',  'RegEx support'),
 	'json_decode'      => array('required', 'JSON support'),
 	'class_implements' => array('required', 'Standard PHP Library (SPL)'),
-	'mb_strlen'        => array('required', 'Multibyte String Extension'),
 	'curl_init'        => array('optional', 'cURL (required if automatic version checks are used, also by some modules.'),
 	'mcrypt_module_open'=> array('optional',  'MCrypt (required if digital signatures or encryption are used)'),
 	'session_start'  => array('optional', 'Session Extension (required if PHP sessions are used)'),
@@ -130,11 +135,6 @@ foreach ($functionchecks AS $func => $descr) {
 	$funcmatrix[] = array('descr' => $descr[1], 'required' => $descr[0], 'enabled' => function_exists($func));
 }
 
-$funcmatrix[] = array(
-    'required' => 'optional',
-    'descr' => 'predis/predis (required if the redis data store is used)',
-    'enabled' => class_exists('\Predis\Client'),
-);
 
 /* Some basic configuration checks */
 
@@ -183,13 +183,10 @@ $t->data['links_federation'] = $links_federation;
 
 $t->data['enablematrix'] = $enablematrix;
 $t->data['funcmatrix'] = $funcmatrix;
-$t->data['requiredmap'] = array(
-    'recommended' => $t->noop('{core:frontpage:recommended}'),
-    'required' => $t->noop('{core:frontpage:required}'),
-    'optional' => $t->noop('{core:frontpage:optional}'),
-);
+$t->data['requiredmap'] = array('recommended' => $t->noop('{core:frontpage:recommended}'));
 $t->data['version'] = $config->getVersion();
-$t->data['directory'] = dirname(dirname(dirname(dirname(__FILE__))));
+// PASW protect folder name
+$t->data['directory'] = $isadmin? dirname(dirname(dirname(dirname(__FILE__)))) : '---';
 
 $t->show();
 

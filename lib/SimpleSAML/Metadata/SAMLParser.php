@@ -362,9 +362,11 @@ class SimpleSAML_Metadata_SAMLParser
             throw new Exception('Document was empty.');
         }
 
-        if (SimpleSAML\Utils\XML::isDOMNodeOfType($element, 'EntityDescriptor', '@md') === true) {
+        assert('$element instanceof DOMElement');
+
+        if (SimpleSAML\Utils\XML::isDOMElementOfType($element, 'EntityDescriptor', '@md') === true) {
             return self::processDescriptorsElement(new \SAML2\XML\md\EntityDescriptor($element));
-        } elseif (SimpleSAML\Utils\XML::isDOMNodeOfType($element, 'EntitiesDescriptor', '@md') === true) {
+        } elseif (SimpleSAML\Utils\XML::isDOMElementOfType($element, 'EntitiesDescriptor', '@md') === true) {
             return self::processDescriptorsElement(new \SAML2\XML\md\EntitiesDescriptor($element));
         } else {
             throw new Exception('Unexpected root node: ['.$element->namespaceURI.']:'.$element->localName);
@@ -1215,6 +1217,10 @@ class SimpleSAML_Metadata_SAMLParser
             $attrname = $child->Name;
             $sp['attributes'][] = $attrname;
 
+            if ($child->isRequired) {
+                $sp['attributes.required'][] = $attrname;
+            }
+
             if ($child->isRequired !== null && $child->isRequired === true) {
                 $sp['attributes.required'][] = $attrname;
             }
@@ -1418,7 +1424,7 @@ class SimpleSAML_Metadata_SAMLParser
             throw new Exception('Failed to load SAML metadata from empty XML document.');
         }
 
-        if (SimpleSAML\Utils\XML::isDOMNodeOfType($ed, 'EntityDescriptor', '@md') === false) {
+        if (SimpleSAML\Utils\XML::isDOMElementOfType($ed, 'EntityDescriptor', '@md') === false) {
             throw new Exception('Expected first element in the metadata document to be an EntityDescriptor element.');
         }
 

@@ -124,22 +124,23 @@ class sspmod_core_Auth_Process_TargetedID extends SimpleSAML_Auth_ProcessingFilt
 
 		if ($this->generateNameId) {
 			// Convert the targeted ID to a SAML 2.0 name identifier element
-			$nameId = new \SAML2\XML\saml\NameID();
-			$nameId->value = $uid;
-			$nameId->Format = \SAML2\Constants::NAMEID_PERSISTENT;
+			$nameId = array(
+				'Format' => \SAML2\Constants::NAMEID_PERSISTENT,
+				'Value' => $uid,
+			);
 
 			if (isset($state['Source']['entityid'])) {
-				$nameId->NameQualifier = $state['Source']['entityid'];
+				$nameId['NameQualifier'] = $state['Source']['entityid'];
 			}
 			if (isset($state['Destination']['entityid'])) {
-				$nameId->SPNameQualifier = $state['Destination']['entityid'];
+				$nameId['SPNameQualifier'] = $state['Destination']['entityid'];
 			}
 
 			$doc = \SAML2\DOMDocumentFactory::create();
 			$root = $doc->createElement('root');
 			$doc->appendChild($root);
 
-			$nameId->toXML($root);
+			\SAML2\Utils::addNameId($root, $nameId);
 			$uid = $doc->saveXML($root->firstChild);
 		}
 

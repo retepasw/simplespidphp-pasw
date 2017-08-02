@@ -11,15 +11,11 @@ $config = array(
      *******************************/
 
     /*
-     * Setup the following parameters to match your installation.
+     * Setup the following parameters to match the directory of your installation.
      * See the user manual for more details.
-     */
-
-    /*
-     * baseurlpath is a *URL path* (not a filesystem path).
-     * A valid format for 'baseurlpath' is:
+     *
+     * Valid format for 'baseurlpath' is:
      * [(http|https)://(hostname|fqdn)[:port]]/[path/to/simplesaml/]
-     * (note that it must end with a '/')
      *
      * The full url format is useful if your SimpleSAMLphp setup is hosted behind
      * a reverse proxy. In that case you can specify the external url here.
@@ -29,21 +25,15 @@ $config = array(
      * reverse proxy).
      */
     'baseurlpath' => 'simplesaml/',
-
-    /*
-     * The following settings are *filesystem paths* which define where
-     * SimpleSAMLphp can find or write the following things:
-     * - 'certdir': The base directory for certificate and key material.
-     * - 'loggingdir': Where to write logs.
-     * - 'datadir': Storage of general data.
-     * - 'temdir': Saving temporary files. SimpleSAMLphp will attempt to create
-     *   this directory if it doesn't exist.
-     * When specified as a relative path, this is relative to the SimpleSAMLphp
-     * root directory. 
-     */
     'certdir' => 'cert/',
     'loggingdir' => 'log/',
     'datadir' => 'data/',
+
+    /*
+     * A directory where SimpleSAMLphp can save temporary files.
+     *
+     * SimpleSAMLphp will attempt to create this directory if it doesn't exist.
+     */
     'tempdir' => '/tmp/simplesaml',
 
     /*
@@ -503,7 +493,7 @@ $config = array(
     /*
      * Options to override the default settings for php sessions.
      */
-    'session.phpsession.cookiename' => 'SimpleSAML',
+    'session.phpsession.cookiename' => null,
     'session.phpsession.savepath' => null,
     'session.phpsession.httponly' => true,
 
@@ -602,7 +592,7 @@ $config = array(
 
     /*
      * This value allows you to set a prefix for memcache-keys. The default
-     * for this value is 'simpleSAMLphp', which is fine in most cases.
+     * for this value is 'SimpleSAMLphp', which is fine in most cases.
      *
      * When running multiple instances of SSP on the same host, and more
      * than one instance is using memcache, you probably want to assign
@@ -656,22 +646,9 @@ $config = array(
     'language.cookie.name' => 'language',
     'language.cookie.domain' => null,
     'language.cookie.path' => '/',
-    'language.cookie.secure' => false,
-    'language.cookie.httponly' => false,
     'language.cookie.lifetime' => (60 * 60 * 24 * 900),
 
     /*
-     * Which i18n backend to use.
-     *
-     * "SimpleSAMLphp" is the home made system, valid for 1.x.
-     * For 2.x, only "gettext/gettext" will be possible.
-     *
-     * Home-made templates will always use "SimpleSAMLphp".
-     * To use twig (where avaliable), select "gettext/gettext".
-     */
-    'language.i18n.backend' => 'SimpleSAMLphp',
-
-    /**
      * Custom getLanguage function called from SimpleSAML\Locale\Language::getLanguage().
      * Function should return language code of one of the available languages or NULL.
      * See SimpleSAML\Locale\Language::getLanguage() source code for more info.
@@ -722,21 +699,8 @@ $config = array(
 
     /*
      * Templating options
-     *
-     * By default, twig templates are not cached. To turn on template caching:
-     * Set 'template.cache' to an absolute path pointing to a directory that
-     * SimpleSAMLphp has read and write permissions to.
-     */
-    //'template.cache' => '',
-
-    /*
-     * Set the 'template.auto_reload' to true if you would like SimpleSAMLphp to
-     * recompile the templates (when using the template cache) if the templates
-     * change. If you don't want to check the source templates for every request,
-     * set it to false.
      */
     'template.auto_reload' => false,
-
 
 
     /*********************
@@ -790,6 +754,9 @@ $config = array(
         // Adopts language from attribute to use in UI
         30 => 'core:LanguageAdaptor',
 
+        /* Add a realm attribute from edupersonprincipalname
+        40 => 'core:AttributeRealm',
+         */
         45 => array(
             'class'         => 'core:StatisticsWithAttribute',
             'attributename' => 'realm',
@@ -980,7 +947,6 @@ $config = array(
      * - 'phpsession': Limited datastore, which uses the PHP session.
      * - 'memcache': Key-value datastore, based on memcache.
      * - 'sql': SQL datastore, using PDO.
-     * - 'redis': Key-value datastore, based on redis.
      *
      * The default datastore is 'phpsession'.
      *
@@ -1006,15 +972,4 @@ $config = array(
      * The prefix we should use on our tables.
      */
     'store.sql.prefix' => 'SimpleSAMLphp',
-
-    /*
-     * The hostname and port of the Redis datastore instance.
-     */
-    'store.redis.host' => 'localhost',
-    'store.redis.port' => 6379,
-
-    /*
-     * The prefix we should use on our Redis datastore.
-     */
-    'store.redis.prefix' => 'SimpleSAMLphp',
 );

@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * File modificato da Paolo Bozzo per Porte Aperte sul Web
+ * partendo dal pacchetto per SPID realizzato dal Comune di Firenze per conto di AgID
+ * che a sua volta è un fork del framework SimpleSAMLphp
+ * ogni modifica è segnalata con la sigla PASW
+ */
+/**
  * Implements the default behaviour for authentication.
  *
  * This class contains an implementation for default behaviour when authenticating. It will
@@ -87,7 +93,7 @@ class SimpleSAML_Auth_Default {
 	public static function logoutCompleted($state) {
 		assert('is_array($state)');
 		assert('array_key_exists("SimpleSAML_Auth_Default.ReturnURL", $state)');
-
+		if (!$state['SimpleSAML_Auth_Default.ReturnURL']) $state['SimpleSAML_Auth_Default.ReturnURL']="/"; //PASW InfoCert workaround
 		\SimpleSAML\Utils\HTTP::redirectTrustedURL($state['SimpleSAML_Auth_Default.ReturnURL']);
 	}
 

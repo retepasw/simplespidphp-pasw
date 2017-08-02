@@ -51,16 +51,11 @@ $config = array(
         /*
          * The attributes parameter must contain an array of desired attributes by the SP.
          * The attributes can be expressed as an array of names or as an associative array
-         * in the form of 'friendlyName' => 'name'. This feature requires 'name' to be set.
+         * in the form of 'friendlyName' => 'name'.
          * The metadata will then be created as follows:
          * <md:RequestedAttribute FriendlyName="friendlyName" Name="name" />
          */
-        /*'name' => array(
-             'en' => 'A service',
-             'no' => 'En tjeneste',
-          ),
-
-          'attributes' => array(
+        /*'attributes' => array(
             'attrname' => 'urn:oid:x.x.x.x',
         ),*/
         /*'attributes.required' => array (
@@ -217,13 +212,10 @@ $config = array(
     // LinkedIn OAuth Authentication API.
     // Register your application to get an API key here:
     //  https://www.linkedin.com/secure/developer
-    // Attributes definition:
-    //  https://developer.linkedin.com/docs/fields
     'linkedin' => array(
         'authlinkedin:LinkedIn',
         'key' => 'xxxxxxxxxxxxxxxx',
         'secret' => 'xxxxxxxxxxxxxxxx',
-        'attributes' => 'id,first-name,last-name,headline,summary,specialties,picture-url,email-address',
     ),
     */
 
