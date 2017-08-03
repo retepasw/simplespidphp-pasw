@@ -106,12 +106,14 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
             // TEXT data type has size constraints that can be hit at some point, so we use LONGTEXT instead
             $text_t = 'LONGTEXT';
         }
-        $query = 'CREATE TABLE '.$this->prefix.
+		// PASW  IF NOT EXISTS added
+        $query = 'CREATE TABLE IF NOT EXISTS '.$this->prefix.
                  '_kvstore (_type VARCHAR(30) NOT NULL, _key VARCHAR(50) NOT NULL, _value '.$text_t.
                  ' NOT NULL, _expire TIMESTAMP, PRIMARY KEY (_key, _type))';
         $this->pdo->exec($query);
 
-        $query = 'CREATE INDEX '.$this->prefix.'_kvstore_expire ON '.$this->prefix.'_kvstore (_expire)';
+		// PASW  IF NOT EXISTS added
+        $query = 'CREATE INDEX IF NOT EXISTS '.$this->prefix.'_kvstore_expire ON '.$this->prefix.'_kvstore (_expire)';
         $this->pdo->exec($query);
 
         $this->setTableVersion('kvstore', 1);
