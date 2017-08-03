@@ -93,7 +93,7 @@ $config = array(
      * tr -c -d '0123456789abcdefghijklmnopqrstuvwxyz' </dev/urandom | dd bs=32 count=1 2>/dev/null;echo
      */
     //'secretsalt' => '043vudvyex3aar8p2j9v6xzv7lm4kzcs',
-    'secretsalt' => 'zjk6celutwo1dcy1yolhvaclzehuiwpt',
+    'secretsalt' => '@secretsalt',
 
     /*
      * Some information about the technical persons running this installation.
