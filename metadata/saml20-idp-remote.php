@@ -485,8 +485,6 @@ hW/hLxLdhks68/TK694xVIuiB40pvMmJwxIyDA==',
 
 /* FINE ARUBA PROD */
 
-// Namirial
-
 $metadata['https://idp.namirialtsp.com/idp'] = array (
   'entityid' => 'https://idp.namirialtsp.com/idp',
   'description' => 
@@ -579,8 +577,6 @@ jC3Y67LUWQ8YgOc=',
     ),
   ),
 );
-
-// Register
 
 $metadata['https://spid.register.it'] = array (
   'entityid' => 'https://spid.register.it',
