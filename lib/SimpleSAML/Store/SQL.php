@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * A data store using a RDBMS to keep the data.
  *
@@ -8,11 +7,10 @@
  */
 class SimpleSAML_Store_SQL extends SimpleSAML_Store
 {
-
     /**
      * The PDO object for our database.
      *
-     * @var PDO
+     * @var \PDO
      */
     public $pdo;
 
@@ -47,22 +45,22 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
     protected function __construct()
     {
         $config = SimpleSAML_Configuration::getInstance();
+        do {
+			$dsn = $config->getString('store.sql.dsn');
+			$username = $config->getString('store.sql.username', null);
+			$password = $config->getString('store.sql.password', null);
+			$this->prefix = $config->getString('store.sql.prefix', 'simpleSAMLphp');
 
-        $dsn = $config->getString('store.sql.dsn');
-        $username = $config->getString('store.sql.username', null);
-        $password = $config->getString('store.sql.password', null);
-        $this->prefix = $config->getString('store.sql.prefix', 'simpleSAMLphp');
+			$this->pdo = new \PDO($dsn, $username, $password);
+			$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-        $this->pdo = new PDO($dsn, $username, $password);
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+			$this->driver = $this->pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
 
-        $this->driver = $this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
-
-        if ($this->driver === 'mysql') {
-            $this->pdo->exec('SET time_zone = "+00:00"');
-        }
-
-        $this->initTableVersionTable();
+			if ($this->driver === 'mysql') {
+				$this->pdo->exec('SET time_zone = "+00:00"');
+			}
+        } while ($this->initTableVersionTable() === false);
+		
         $this->initKVTable();
     }
 
@@ -72,21 +70,35 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
      */
     private function initTableVersionTable()
     {
+		static $count = 0;
         $this->tableVersions = array();
 
         try {
             $fetchTableVersion = $this->pdo->query('SELECT _name, _version FROM '.$this->prefix.'_tableVersion');
-        } catch (PDOException $e) {
-            $this->pdo->exec(
-                'CREATE TABLE '.$this->prefix.
-                '_tableVersion (_name VARCHAR(30) NOT NULL UNIQUE, _version INTEGER NOT NULL)'
-            );
-            return;
+        } catch (\PDOException $e) {
+            if ($count === 0) {
+				$orig = getcwd();
+				$root = $_SERVER['DOCUMENT_ROOT'];
+				chdir ($root);
+				if (is_writable('..') && file_exists('simplespidphp') == false) chdir('..');
+				$file =  'simplespidphp/sqlitedatabase.sq3';
+				@unlink ($file);
+				chdir($orig);
+				$count++;
+				return false;
+            } else {
+				$this->pdo->exec(
+					'CREATE TABLE IF NOT EXISTS '.$this->prefix.
+					'_tableVersion (_name VARCHAR(30) NOT NULL UNIQUE, _version INTEGER NOT NULL)'
+				);
+				return true;
+            }            
         }
 
-        while (($row = $fetchTableVersion->fetch(PDO::FETCH_ASSOC)) !== false) {
+        while (($row = $fetchTableVersion->fetch(\PDO::FETCH_ASSOC)) !== false) {
             $this->tableVersions[$row['_name']] = (int) $row['_version'];
         }
+        return true;
     }
 
 
@@ -95,7 +107,6 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
      */
     private function initKVTable()
     {
-
         if ($this->getTableVersion('kvstore') === 1) {
             // Table initialized
             return;
@@ -106,13 +117,11 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
             // TEXT data type has size constraints that can be hit at some point, so we use LONGTEXT instead
             $text_t = 'LONGTEXT';
         }
-		// PASW  IF NOT EXISTS added
         $query = 'CREATE TABLE IF NOT EXISTS '.$this->prefix.
                  '_kvstore (_type VARCHAR(30) NOT NULL, _key VARCHAR(50) NOT NULL, _value '.$text_t.
                  ' NOT NULL, _expire TIMESTAMP, PRIMARY KEY (_key, _type))';
         $this->pdo->exec($query);
 
-		// PASW  IF NOT EXISTS added
         $query = 'CREATE INDEX IF NOT EXISTS '.$this->prefix.'_kvstore_expire ON '.$this->prefix.'_kvstore (_expire)';
         $this->pdo->exec($query);
 
@@ -188,14 +197,13 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
                 return;
         }
 
-        // Default implementation. Try INSERT, and UPDATE if that fails.
-
+        // default implementation, try INSERT, and UPDATE if that fails.
         $insertQuery = 'INSERT INTO '.$table.' '.$colNames.' '.$values;
         $insertQuery = $this->pdo->prepare($insertQuery);
         try {
             $insertQuery->execute($data);
             return;
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $ecode = (string) $e->getCode();
             switch ($ecode) {
                 case '23505': // PostgreSQL
@@ -209,7 +217,6 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
         $updateCols = array();
         $condCols = array();
         foreach ($data as $col => $value) {
-
             $tmp = $col.' = :'.$col;
 
             if (in_array($col, $keys, true)) {
@@ -230,7 +237,6 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
      */
     private function cleanKVStore()
     {
-
         SimpleSAML\Logger::debug('store.sql: Cleaning key-value store.');
 
         $query = 'DELETE FROM '.$this->prefix.'_kvstore WHERE _expire < :now';
@@ -265,7 +271,7 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
         $query = $this->pdo->prepare($query);
         $query->execute($params);
 
-        $row = $query->fetch(PDO::FETCH_ASSOC);
+        $row = $query->fetch(\PDO::FETCH_ASSOC);
         if ($row === false) {
             return null;
         }
@@ -319,7 +325,6 @@ class SimpleSAML_Store_SQL extends SimpleSAML_Store
             '_value'  => $value,
             '_expire' => $expire,
         );
-
 
         $this->insertOrUpdate($this->prefix.'_kvstore', array('_type', '_key'), $data);
     }
