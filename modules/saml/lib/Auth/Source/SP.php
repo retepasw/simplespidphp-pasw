@@ -290,9 +290,13 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 				\SAML2\Constants::BINDING_HTTP_POST)
 			);
 		}
-		$ar->setDestination($dst['Location']);
+		/* https://github.com/italia/spid-regole-tecniche/issues/20 */
+		// $ar->setDestination($dst['Location']);
+		$ar->setDestination($idpMetadata->getString('entityid'));
 
 		$b = \SAML2\Binding::getBinding($dst['Binding']);
+		/* https://github.com/italia/spid-regole-tecniche/issues/20 */
+		$b->setDestination($dst['Location']);
 
 		$this->sendSAML2AuthnRequest($state, $b, $ar);
 
@@ -631,7 +635,9 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 		$lr->setNameId($nameId);
 		$lr->setSessionIndex($sessionIndex);
 		$lr->setRelayState($id);
-		$lr->setDestination($endpoint['Location']);
+		/* https://github.com/italia/spid-regole-tecniche/issues/20 */
+		// $lr->setDestination($endpoint['Location']);
+		$lr->setDestination($idpMetadata->getString('entityid'));
 
 		$encryptNameId = $idpMetadata->getBoolean('nameid.encryption', NULL);
 		if ($encryptNameId === NULL) {
@@ -642,6 +648,8 @@ class sspmod_saml_Auth_Source_SP extends SimpleSAML_Auth_Source {
 		}
 
 		$b = \SAML2\Binding::getBinding($endpoint['Binding']);
+		/* https://github.com/italia/spid-regole-tecniche/issues/20 */
+		$b->setDestination($endpoint['Location']);
 		$b->send($lr);
 
 		assert('FALSE');
