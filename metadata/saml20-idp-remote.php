@@ -187,7 +187,7 @@ $metadata['https://login.id.tim.it/affwebservices/public/saml2sso'] = array (
       'encryption' => false,
       'signing' => true,
       'type' => 'X509Certificate',
-      'X509Certificate' => 'MIIE7jCCA9agAwIBAgIJAIfOQuFIcYGRMA0GCSqGSIb3DQEBCwUAMIGqMQswCQYDVQQGEwJJVDELMAkGA1UECBMCUk0xEDAOBgNVBAcTB1BvbWV6aWExLjAsBgNVBAoTJVRlbGVjb20gSXRhbGlhIFRydXN0IFRlY2hub2xvZ2llcyBzcmwxKDAmBgNVBAsTH1NlcnZpemkgcGVyIGwnaWRlbnRpdGEgZGlnaXRhbGUxIjAgBgNVBAMTGVRJIFRydXN0IFRlY2hub2xvZ2llcyBzcmwwHhcNMTYwMTE4MTAxODA2WhcNMTgwMTE3MTAxODA2WjCBqjELMAkGA1UEBhMCSVQxCzAJBgNVBAgTAlJNMRAwDgYDVQQHEwdQb21lemlhMS4wLAYDVQQKEyVUZWxlY29tIEl0YWxpYSBUcnVzdCBUZWNobm9sb2dpZXMgc3JsMSgwJgYDVQQLEx9TZXJ2aXppIHBlciBsJ2lkZW50aXRhIGRpZ2l0YWxlMSIwIAYDVQQDExlUSSBUcnVzdCBUZWNobm9sb2dpZXMgc3JsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0mvyKfdJp0YgK7KAdD+sVcVpHcZoBBBFcz0cg8PPdT+2nH0ES09uxHWghcHNg0nJGWPJKaUJ0PWdokKwQ+ahI7RiHI9zufN4G7LlM40ko7heI5Xjv4wCMeJNYM2GY+1l9fS+595882GopALi8MGhTxH3QFvPTDtxj7D0fsKw0DNFk18jcRoLwfc/X0fzyUMBDk6QaZzi5MTjKP5ouHn/CATkW7MRZZOy6CGb6Fic0HyOhB46eFnB2QlRnCzQe1cwzpnfzB/BbtouWe/CFlHtbACbZwXGRKfFJnr3Zj5eYi5aRZDteIXMAj/UmNTP0X0PcI66b5ialTeDXFjgEO1hhwIDAQABo4IBEzCCAQ8wHQYDVR0OBBYEFIqo1nunRisDzjvLkTZx2/VVmXPjMIHfBgNVHSMEgdcwgdSAFIqo1nunRisDzjvLkTZx2/VVmXPjoYGwpIGtMIGqMQswCQYDVQQGEwJJVDELMAkGA1UECBMCUk0xEDAOBgNVBAcTB1BvbWV6aWExLjAsBgNVBAoTJVRlbGVjb20gSXRhbGlhIFRydXN0IFRlY2hub2xvZ2llcyBzcmwxKDAmBgNVBAsTH1NlcnZpemkgcGVyIGwnaWRlbnRpdGEgZGlnaXRhbGUxIjAgBgNVBAMTGVRJIFRydXN0IFRlY2hub2xvZ2llcyBzcmyCCQCHzkLhSHGBkTAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQBkgBFZDg34+ER3HaFSmg5I7BUkjyPinMqy1G2k5O2Jlry/e6X8u8QhieKXhMtGq3+XzYHY/QEFmnqOvEdlCeET9PPVb0Mr0mG5vU7lb2MfB+2+Wqg+1Hf8c3ABfDItuJoL95OsbEO4a+3a6EMfaAdSaeTb2+rsfr6R12cSxQcx16430iMhGj4T9GpFp8XH/JSE5XJvIddpNxuzf+/LlbcsMJ5lljitlOYUi7MxLpiqtgl56UD1YkGcezoi2Glb3m3l3a2V4pShh6qROfyd87jLCjqsuBJtlgToSQgMTb4lFv9RBbFD3rjL8gCx55W6kxP1YeclFVPzk/7Xaca29uTJ',
+      'X509Certificate' => 'MIIEKTCCAxGgAwIBAgIJAOCOuLmV0s27MA0GCSqGSIb3DQEBCwUAMIGqMSIwIAYDVQQDDBlUSSBUcnVzdCBUZWNobm9sb2dpZXMgc3JsMSgwJgYDVQQLDB9TZXJ2aXppIHBlciBsJ2lkZW50aXRhIGRpZ2l0YWxlMS4wLAYDVQQKDCVUZWxlY29tIEl0YWxpYSBUcnVzdCBUZWNobm9sb2dpZXMgc3JsMRAwDgYDVQQHDAdQb21lemlhMQswCQYDVQQIDAJSTTELMAkGA1UEBhMCSVQwHhcNMTcxMTE3MTUzNzIyWhcNMjExMTE2MTUzNzIyWjCBqjEiMCAGA1UEAwwZVEkgVHJ1c3QgVGVjaG5vbG9naWVzIHNybDEoMCYGA1UECwwfU2Vydml6aSBwZXIgbCdpZGVudGl0YSBkaWdpdGFsZTEuMCwGA1UECgwlVGVsZWNvbSBJdGFsaWEgVHJ1c3QgVGVjaG5vbG9naWVzIHNybDEQMA4GA1UEBwwHUG9tZXppYTELMAkGA1UECAwCUk0xCzAJBgNVBAYTAklUMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwEBMMNhDczJh9ewCYX/Ag135q4c0n4Qg6FGfX7mZcg6TVI8IBKdeLHUC/e80iyVkufmqeu0udaFPWywyWJ4nhP10oi0ft1ftO+7XYzX4yDPoiRtsF6dtI3drjyaHVgWcDOWJIVGAJtLbdp5vcFLcboDlw4d2JC9if8wndMK9d4Kbb1P4+6v/ERaGozBFFntzuGRUAq5f5tsk9mh6D+g38xdHnK1tj1PcDIvw0DaRkD6/JL1rjHss+5sLSHCRtT7FG0ynQne1PjnEgUXL9M0xeeS7cV2hSxDU2ghZ7t8pzcEY8vJp/mWA7PHT07Nonp3yoh8dgqBvAa+sS6wqpiPBfQIDAQABo1AwTjAdBgNVHQ4EFgQURVRGXUUj2q6nPlqzvIKHtQx4VrAwHwYDVR0jBBgwFoAURVRGXUUj2q6nPlqzvIKHtQx4VrAwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAOIndKJCOyi0qP0IK894er7/jGxV6XCEXY5PLlFa9ibnaPjusYXlMPn6rIjDUAkcMj/fVF0XYa862At1GWclS6S6yYDt06W/GoMknM5XsByxO5HzA7iuTc4MheUTdlvD05PtY6n3SXVQLTNp+zHdh/LlhI1d380DFDR8wZJzUnYJ+vb+2DU62+4gVytk0C6b4RNEK4kfHkQGdJyKnLjxtm66iJBP5w+cC1A0UdGx7xLv8EIVued0L9agJi5CCbly5UGXEGvGUZf7vSSMV0UM2tGbNY5vsZQX0aRl9NGZOsKBydY5FEgCk+SLYAHDq29EZZRcPE6dJqB1d5zLwUQ/vZg==',
     ),
   ),
 );
@@ -646,6 +646,109 @@ $metadata['https://spid.register.it'] = array (
       'signing' => true,
       'type' => 'X509Certificate',
       'X509Certificate' => 'MIIDazCCAlOgAwIBAgIED8R+MDANBgkqhkiG9w0BAQsFADBmMQswCQYDVQQGEwJJVDELMAkGA1UECBMCRkkxETAPBgNVBAcTCGZsb3JlbmNlMREwDwYDVQQKEwhyZWdpc3RlcjERMA8GA1UECxMIcmVnaXN0ZXIxETAPBgNVBAMTCHJlZ2lzdGVyMB4XDTE3MDcxMDEwMzM0OVoXDTI3MDcwODEwMzM0OVowZjELMAkGA1UEBhMCSVQxCzAJBgNVBAgTAkZJMREwDwYDVQQHEwhmbG9yZW5jZTERMA8GA1UEChMIcmVnaXN0ZXIxETAPBgNVBAsTCHJlZ2lzdGVyMREwDwYDVQQDEwhyZWdpc3RlcjCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANkYXHbm3q6xt3wrLAXnytswtj2JE1MM8aYmNXkTgDMCwO/+ahQOoQru6IBTbjfWH9jr+Woy54FDdX6bHl+5/mO6l/yAB/bKgwe5HmUjZJ5oakJjWucsSm+VkEwN2HquBZoN+mktju00xvLX5VAjmDHvZc/b8NhNr/FRKlYITboygkhGiUwGI3wLf3IaB76J0o7ugpW2WNLcywpX+p1VWZAMCdHBveBe/e42hh6WnWPqdwYUWHOgJ8HX4IzCHifiS1n6eUMgtoTQOmSvTQDwSjD0WWJE8tWSYt+txXg1t+3A3tbZOFu7T442wE7DtMdUL4+8gimQS+e8PxDK1uTqIPUCAwEAAaMhMB8wHQYDVR0OBBYEFMCgo1gzCIcUThQIs5g5ikfv1D7eMA0GCSqGSIb3DQEBCwUAA4IBAQBnGw3i3hQ37L8vyelkyZMeO3tLK65Cqti4oVrQZxClGV5zNA6fIMDY8Mci1UhLwjzp29POd/sez0vuHZ/Vmmygzoye4jTKr6c3jAh0u81FTzefBU+vIietm9RuV3sd7D9xq6EqOY1NDL+rkvBcTFtiwLEUm2kHYu/U67jk73pxOtmqxQvQeMU8oi42tehMZGLIGp3U5lGS8YGGl+GtkkQ2Z5/PSm67HGP81kTArG/QX+bX+ykypTJVg9hfb9zOFQidp1HkCRIez6YhDiP/ZLurd6Grt/wVfZPNBO8EOgy25AkRZlp+UD686BFg7qq5KKEbz3qmPrj8deHL3duacZcp',
+    ),
+  ),
+);
+
+// INTESA ID
+$metadata['https://spid.intesa.it'] = array (
+  'entityid' => 'https://spid.intesa.it',
+  'description' => 
+  array (
+    'it' => 'IN.TE.S.A.
+            S.p.A.',
+  ),
+  'OrganizationName' => 
+  array (
+    'it' => 'IN.TE.S.A.
+            S.p.A.',
+  ),
+  'name' => 
+  array (
+    'it' => 'Intesa S.p.A.',
+  ),
+  'OrganizationDisplayName' => 
+  array (
+    'it' => 'Intesa S.p.A.',
+  ),
+  'url' => 
+  array (
+    'it' => 'https://www.intesa.it/',
+  ),
+  'OrganizationURL' => 
+  array (
+    'it' => 'https://www.intesa.it/',
+  ),
+  'contacts' => 
+  array (
+  ),
+  'metadata-set' => 'saml20-idp-remote',
+  'sign.authnrequest' => true,
+  'SingleSignOnService' => 
+  array (
+    0 => 
+    array (
+      'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+      'Location' => 'https://spid.intesa.it/Time4UserServices/services/idp/AuthnRequest/',
+    ),
+    1 => 
+    array (
+      'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+      'Location' => 'https://spid.intesa.it/Time4UserServices/services/idp/AuthnRequest/',
+    ),
+  ),
+  'SingleLogoutService' => 
+  array (
+    0 => 
+    array (
+      'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+      'Location' => 'https://spid.intesa.it/Time4UserServices/services/idp/SingleLogout',
+      'ResponseLocation' => 'https://spid.intesa.it/Time4UserServices/services/idp/SingleLogout',
+    ),
+    1 => 
+    array (
+      'Binding' => 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+      'Location' => 'https://spid.intesa.it/Time4UserServices/services/idp/SingleLogout',
+      'ResponseLocation' => 'https://spid.intesa.it/Time4UserServices/services/idp/SingleLogout',
+    ),
+  ),
+  'ArtifactResolutionService' => 
+  array (
+  ),
+  'NameIDFormats' => 
+  array (
+    0 => 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient',
+  ),
+  'keys' => 
+  array (
+    0 => 
+    array (
+      'encryption' => false,
+      'signing' => true,
+      'type' => 'X509Certificate',
+      'X509Certificate' => 'MIIEDjCCAvagAwIBAgIIIT1A+ywbIQAwDQYJKoZIhvcNAQELBQAwXjEzMDEGA1UE
+                        AwwqSU4uVEUuUy5BLiBTLnAuQSAtIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MRow
+                        GAYDVQQKDBFJTi5URS5TLkEuIFMucC5BLjELMAkGA1UEBhMCSVQwHhcNMTcwOTE1
+                        MTMyMzQ1WhcNMzYwNzAxMTk1OTAwWjBQMSUwDwYDVQQuEwgyMDA3OTc5NzASBgNV
+                        BAMMC1NBTUwgU2lnbmVyMRowGAYDVQQKDBFJTi5URS5TLkEuIFMucC5BLjELMAkG
+                        A1UEBhMCSVQwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDhYXkP+eQB
+                        URgmslDXBjG0ad+DkSAkWt7hUoaTyiK0e34QiyArq043plqTrt+6FzTGeX7960Qr
+                        3tCLGCiVOi47QuE09IKfJmKGEaUQnJQehHYZs/XV0OYQl18WrCxUX6ALOcqPs+4y
+                        pCbJV1WzSosfBcPBzivJER8kvrynMXI3or18e9XPTGBn8qNFyNF1E3BJ5UhrDvk5
+                        W2gKyYKz0M/CIu9PiHuO/ne6HbeNrCS/xzXtjsTusk41AOxIQoFbEzS08xcRY+QD
+                        E8oLcAmecSjT3xv3r9dWke6KTTAahS3K+5mOYRcBXj2FFegiUp+xh4OAWdH1+gGD
+                        Ym+3aAmMpaLtAgMBAAGjgd0wgdowHQYDVR0OBBYEFEw9xWg4qvQGdlGMCqmJcVDg
+                        dE8aMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUySnWJ2sw0ljDpJVrtrxCCP0b
+                        1CYwGgYDVR0QBBMwEYAPMjAxNzA5MTUxMzIzNDVaMD8GA1UdHwQ4MDYwNKAyoDCG
+                        Lmh0dHA6Ly9lLXRydXN0Y29tLmludGVzYS5pdC9DUkwvSU5URVNBX25DQS5jcmww
+                        DgYDVR0PAQH/BAQDAgSwMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDAN
+                        BgkqhkiG9w0BAQsFAAOCAQEAVRHyFRZZFpW/qjJpKftd86h3wOdUqOhc2W8ZHv0s
+                        t8ptG+mZk3l1iWAsEPqKMIBhksgTvalnHC1lHUt11xsZ2mzUjVpiG8XiWXYXQnY2
+                        D+q7Dc4n20kJ717qf4SDN8wX1A6XvT3Wrsfh87vg3ZFD56/eyur2snWu4OilsFqA
+                        yLhnExG4puJ4JKBWnlwAGXD9SFgkSZ8FC66KQs6CAwVkvCIom3IwJeU/VrYQF6XH
+                        kVCQgr5mojXgCkrlRNl53WAKfQHCT4QH+oQVP97PCEL/wQ1zi0UzWauKT6u2wDym
+                        9rcpch+WLa0GUtYNhuoLU2SregPKwTWg2DfINJObyWRpww==
+                    ',
     ),
   ),
 );
