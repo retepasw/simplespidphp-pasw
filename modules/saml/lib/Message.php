@@ -430,7 +430,7 @@ class sspmod_saml_Message {
 		$nameIdPolicy_cf = SimpleSAML_Configuration::loadFromArray($nameIdPolicy);
 		$policy = array(
 			'Format' => $nameIdPolicy_cf->getString('Format', \SAML2\Constants::NAMEID_TRANSIENT),
-			'AllowCreate' => $nameIdPolicy_cf->getBoolean('AllowCreate', true),
+			//'AllowCreate' => $nameIdPolicy_cf->getBoolean('AllowCreate', true),
 		);
 		$spNameQualifier = $nameIdPolicy_cf->getString('SPNameQualifier', false);
 		if ($spNameQualifier !== false) {
@@ -454,7 +454,7 @@ class sspmod_saml_Message {
 		$issuer = new \SAML2\Issuer($spMetadata->getString('entityid'));
 		$issuer->setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:entity");
 		// PASW
-		$issuer->setNameQualifier(parse_url($spMetadata->getString('entityid'), PHP_URL_SCHEME).'://'.parse_url($spMetadata->getString('entityid'), PHP_URL_HOST));
+		$issuer->setNameQualifier($issuer);// parse_url($spMetadata->getString('entityid'), PHP_URL_SCHEME).'://'.parse_url($spMetadata->getString('entityid'), PHP_URL_HOST));
 		$ar->setIssuer($issuer);
 		/*COMUNE DI FIRENZE*/
 
@@ -493,7 +493,7 @@ class sspmod_saml_Message {
 		$issuer = new \SAML2\Issuer($srcMetadata->getString('entityid')); // \SAML2\XML\saml\Issuer();
 		$issuer->setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:entity");
 		// PASW
-		$issuer->setNameQualifier(parse_url($srcMetadata->getString('entityid'), PHP_URL_SCHEME).'://'.parse_url($srcMetadata->getString('entityid'), PHP_URL_HOST));
+		$issuer->setNameQualifier($issuer); //parse_url($srcMetadata->getString('entityid'), PHP_URL_SCHEME).'://'.parse_url($srcMetadata->getString('entityid'), PHP_URL_HOST));
 		$lr->setIssuer($issuer);
 		/*COMUNE DI FIRENZE*/
 
